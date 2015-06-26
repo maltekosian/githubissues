@@ -30,7 +30,7 @@
         }
       } 
       try {
-        xmlhttp.open('GET','https://api.github.com/repos/maltekosian/textfire/issues',true);
+        xmlhttp.open('GET','https://api.github.com/repos/[username]/[reproname]/issues',true);
         xmlhttp.send();  
       } catch (ex) {
         showAllIssues(JSON.parse(store.getItem('github_issues')), false);
