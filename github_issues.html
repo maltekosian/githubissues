@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style>
+  body, fieldset, legend, b, li {font-family: sans-serif; font-size: 14px;}
+  body {width: 98%;}
+  li {margin: 1%;}
+  </style>
+ </head>
+ <body>
+ <div id="myDiv" style="width: 90%; height: 100%;"></div>
+  <script>
+    var store = localStorage;
+    
+    function callAllIssues() {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          //success
+          showAllIssues(JSON.parse(xmlhttp.responseText), true);
+        } else if (xmlhttp.status == 404 || xmlhttp.status == 0) {
+          //failed
+          showAllIssues(JSON.parse(store.getItem('github_issues')), false);
+        }
+      } 
+      try {
+        xmlhttp.open('GET','https://api.github.com/repos/maltekosian/textfire/issues',true);
+        xmlhttp.send();  
+      } catch (ex) {
+        showAllIssues(JSON.parse(store.getItem('github_issues')), false);
+      }      
+    };
+
+    function showAllIssues(json, online) {      
+      store.setItem('github_issues', JSON.stringify(json));
+      var htm = online ? '<span style="background:#3c3;color:#fff;padding:1%;"><b> ONLINE </b></span>' : 
+          '<span style="background:#300;color:#e00;padding:1%;"><b> FAILED or OFFLINE </b></span>'; 
+      htm += '<ul style="list-style: none;">';
+      console.log(json[0]);
+      for (var i = 0; i < json.length; i++) {
+        //id
+        //number
+        //title
+        //body
+        htm += '<li><fieldset style="position: relative;"><legend>#' + json[i]['number'] + ', ' +
+          'id:' + json[i]['id'] + '</legend><br><b>' + json[i]['title'] + '</b><br><br>' +
+          json[i]['body'] + '<br><br>assignee:<b>'+json[i]['assignee']['login']+'</b><div style="position: absolute;'+ 
+          'bottom: 20%; right: 0; background: #666; color: #eee; padding: 1%;" title="' + 
+          json[i]['milestone']['description'] + '">' + json[i]['milestone']['title'] + '</div><br><br>labels: ';
+          for (var j = 0; j < json[i]['labels'].length; j++) {
+            htm += '<span style="margin: 0 1%; padding: 1%; color: white; text-transform: uppercase;' + 
+              'background:#'+json[i]['labels'][j]['color']+';"><b>'+json[i]['labels'][j]['name']+'</b></span>';
+          } 
+          htm +='</fieldset></li>'; 
+      } 
+      document.getElementById('myDiv').innerHTML = htm + '</ul>';
+    };
+
+    document.getElementById('myDiv').style.height = document.getElementById('myDiv').offsetWidth+'px';
+
+    window.onload = function() {setTimeout(callAllIssues, 100);};
+  </script>
+ </body>
+</html>
