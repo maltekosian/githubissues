@@ -72,23 +72,28 @@
         //number
         //title
         //body
-        htm += '<li><fieldset style="position: relative;"><legend>#' + json[i]['number'] + ', ' +
-          'id:' + json[i]['id'] + '</legend><br><b>' + json[i]['title'] + '</b><br><br>' +
-          json[i]['body'] + '<br><br>assignee:<b>'+json[i]['assignee']['login']+'</b><div style="position: absolute;'+
-          'bottom: 20%; right: 0; background: #666; color: #eee; padding: 1%;" title="' +
-          json[i]['milestone']['description'] + '">' + json[i]['milestone']['title'] + '</div><br><br>labels: ';
+        if (json[i] != null) {
+          htm += '<li><fieldset style="position: relative;"><legend>#' + json[i]['number'] + ', ' +
+          'id:' + json[i]['id'] + '</legend><br><b>' + json[i]['title'] + '</b><br><br>';
+          htm += (json[i]['body'] != null ? json[i]['body'] : '') + '<br><br>assignee:<b>';
+          htm += json[i]['assignee']!= null ? json[i]['assignee']['login'] : '';
+          htm += '</b><div style="position: absolute;' + 'bottom: 20%; right: 0; background: #666; color: #eee; padding: 1%;" title="';
+          htm += (json[i]['milestone'] != null ? json[i]['milestone']['description'] : '') + '">'; 
+          htm += (json[i]['milestone'] != null ? json[i]['milestone']['title'] : '')+ '</div><br><br>labels: ';
+          if (json[i]['labels'] != null)
           for (var j = 0; j < json[i]['labels'].length; j++) {
             htm += '<span style="margin: 0 1%; padding: 1%; color: white; text-transform: uppercase;' +
               'background:#'+json[i]['labels'][j]['color']+';"><b>'+json[i]['labels'][j]['name']+'</b></span>';
           }
           htm +='</fieldset></li>';
+        }
       }
       document.getElementById('myDiv').innerHTML = htm + '</ul>';
     };
 
     document.getElementById('myDiv').style.height = document.getElementById('myDiv').offsetWidth+'px';
 
-    window.onload = function() {setTimeout(callAllIssues, 100);};
+    window.onload = function() {setTimeout(callAllIssues, 1000);};
   </script>
  </body>
 </html>
